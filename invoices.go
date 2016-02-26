@@ -6,6 +6,11 @@ import (
 	"net/http"
 )
 
+const (
+	Paid   = "Paid"
+	Posted = "Posted"
+)
+
 // TODO Are there multiple types of invoiceitems?
 type InvoiceItem struct {
 	LineItems []LineItem `xml:"lineitem"`
@@ -13,7 +18,7 @@ type InvoiceItem struct {
 
 type LineItem struct {
 	XMLName         xml.Name `xml:"lineitem"`
-	LineNumber      uint64   `xml:"line_num"`
+	LineNumber      string   `xml:"line_num"`
 	AccountLabel    string   `xml:"accountlabel"`
 	GLAccountNumber string   `xml:"glaccountno"`
 	Amount          float64  `xml:"amount"`
@@ -30,7 +35,7 @@ type LineItem struct {
 
 type Invoice struct {
 	XMLName       xml.Name `xml:"invoice"`
-	Key           uint64   `xml:"key"`
+	Key           string   `xml:"key"`
 	CustomerID    string   `xml:"customerid"`
 	DateCreated   Date     `xml:"datecreated"`
 	DatePosted    Date     `xml:"dateposted"`
@@ -45,6 +50,7 @@ type Invoice struct {
 	TotalDue      float64  `xml:"totaldue"`
 	Description   string   `xml:"description"`
 	Currency      string   `xml:"currency"`
+	State         string   `xml:"state"`
 	// TODO modification date
 }
 
@@ -89,19 +95,9 @@ func (inv Invoices) Get(id string) (Invoice, error) {
 		return Invoice{}, err
 	}
 
-	// Check the statuses
-	// TODO Dump the body on non-success
-	if body.Control.Status != Success {
-		return Invoice{}, fmt.Errorf(
-			"unexpected control status: %s", body.Control.Status,
-		)
-	}
-
-	if body.Operation.Result.Status != Success {
-		return Invoice{}, fmt.Errorf(
-			"unexpected operation result status: %s",
-			body.Operation.Result.Status,
-		)
+	// Check the response for errors
+	if err = inv.Client.CheckResponseErrors(body); err != nil {
+		return Invoice{}, err
 	}
 
 	// Enforce one and only one result
@@ -152,19 +148,10 @@ func (inv Invoices) List(params ...Params) ([]Invoice, error) {
 		return nil, err
 	}
 
-	// Check the statuses
-	// TODO Dump the body on non-success
-	if body.Control.Status != Success {
-		return nil, fmt.Errorf(
-			"unexpected control status: %s", body.Control.Status,
-		)
+	// Check the response for errors
+	if err = inv.Client.CheckResponseErrors(body); err != nil {
+		return nil, err
 	}
 
-	if body.Operation.Result.Status != Success {
-		return nil, fmt.Errorf(
-			"unexpected operation result status: %s",
-			body.Operation.Result.Status,
-		)
-	}
 	return body.Operation.Result.Data.Invoices, nil
 }

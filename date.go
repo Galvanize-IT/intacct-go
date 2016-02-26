@@ -42,7 +42,8 @@ func (date Date) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 func (date *Date) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var p DateParts
 	if err := d.DecodeElement(&p, &start); err != nil {
-		return err
+		// TODO If parsing fails just leave the date zero
+		return d.Skip()
 	}
 	date.Time = time.Date(p.Year, p.Month, p.Day, 0, 0, 0, 0, time.UTC)
 	return nil

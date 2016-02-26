@@ -6,6 +6,7 @@ import (
 
 // Status consts
 const (
+	Failure = "failure"
 	Success = "success"
 )
 
@@ -13,7 +14,15 @@ const (
 type Response struct {
 	XMLName   xml.Name `xml:"response"`
 	Control   Control
-	Operation Operation
+	Operation ResultOperation
+	Errors    []Error `xml:"errormessage"`
+}
+
+type ResultOperation struct {
+	XMLName        xml.Name `xml:"operation"`
+	Authentication Authentication
+	Content        Content `xml:"content"`
+	Result         Result  `xml:"result"`
 }
 
 // TODO Or use delayed parsing?

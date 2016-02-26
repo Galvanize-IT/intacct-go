@@ -5,9 +5,9 @@ import (
 )
 
 type Function struct {
-	XMLName   xml.Name `xml:"function"`
-	ControlID string   `xml:"controlid,attr"`
-	Method    Method
+	XMLName xml.Name `xml:"function"`
+	Method
+	ControlID string `xml:"controlid,attr"`
 }
 
 // TODO Method is not a good name...

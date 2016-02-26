@@ -28,9 +28,7 @@ func TestFunction(t *testing.T) {
 			Object:   "invoice",
 			MaxItems: 10,
 			Filter:   CustomerID.Equals("C-01"),
-			Sorts: Sorts{
-				Fields: []SortField{{Order: Desc, Value: "dateposted"}},
-			},
+			Sorts:    Sorts{{Order: Desc, Value: "dateposted"}},
 		},
 	}
 

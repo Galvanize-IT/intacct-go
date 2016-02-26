@@ -3,6 +3,7 @@ package intacct
 import (
 	"bytes"
 	"encoding/xml"
+	"fmt"
 	"net/http"
 )
 
@@ -22,27 +23,8 @@ type Client struct {
 // TODO accept method?
 // TODO Pass operations instead?
 func (c Client) NewRequest(m Method, ps ...Params) (*http.Request, error) {
-	// Create the login
-	login := NewLogin(c.config.User, c.config.Company, c.config.UserPassword)
-	if c.config.Location != "" {
-		login.LocationID = c.config.Location // TODO remove the ID suffixes?
-	}
-
 	// Create request body
-	body := Request{
-		Control: NewControlV2(c.config.Sender, c.config.SenderPassword),
-		// TODO Multiple functions?
-		Operation: Operation{
-			Authentication: Authentication{
-				Login: login,
-			},
-			Content: Content{
-				Functions: []Function{
-					{Method: m},
-				},
-			},
-		},
-	}
+	body := NewRequestV2(c.config, m)
 
 	b, err := xml.Marshal(body)
 	if err != nil {
@@ -56,6 +38,26 @@ func (c Client) NewRequest(m Method, ps ...Params) (*http.Request, error) {
 	}
 	req.Header.Add("Content-Type", ContentType)
 	return req, nil
+}
+
+func (c Client) CheckResponseErrors(body Response) error {
+	// Check the statuses
+	// TODO Dump the body on non-success
+	if body.Control.Status != Success {
+		return fmt.Errorf(
+			"unexpected control status (%s): %s",
+			body.Control.Status, body.Errors,
+		)
+	}
+
+	// TODO Where do all the errors hide?
+	// if body.Operation.Result.Status != Success {
+	// 	return fmt.Errorf(
+	// 		"unexpected operation result status (%s): %s",
+	// 		body.Operation.Result.Status, body.Errors,
+	// 	)
+	// }
+	return nil
 }
 
 func NewClient(config Config) Client {

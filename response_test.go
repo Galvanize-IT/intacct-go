@@ -178,3 +178,42 @@ func TestResponse(t *testing.T) {
 		)
 	}
 }
+
+var exampleError = []byte(`<response>
+  <control>
+    <status>failure</status>
+    <senderid>Galvanize</senderid>
+    <controlid>controlID</controlid>
+    <uniqueid>false</uniqueid>
+    <dtdversion>2.1</dtdversion>
+  </control>
+  <errormessage>
+    <error>
+      <errorno>XL03000003</errorno>
+      <description/>
+      <description2>XML Parse error: Error 502: Value &amp;quot;whatever&amp;quot; for attribute object of get_list is not among the enumerated set. Line: 19, column: 70.</description2>
+      <correction/>
+    </error>
+  </errormessage>
+</response>`)
+
+func TestResponseError(t *testing.T) {
+	var resp Response
+	if err := xml.Unmarshal(exampleError, &resp); err != nil {
+		t.Error(err)
+	}
+
+	if resp.Control.Status != Failure {
+		t.Errorf("unexpected control status: %s", resp.Control.Status)
+	}
+
+	if len(resp.Errors) != 1 {
+		t.Fatal("there should be 1 error in the result")
+	}
+	err := resp.Errors[0]
+	if err.Number != "XL03000003" {
+		t.Errorf(
+			"unexpected error number: %s != XL03000003", err.Number,
+		)
+	}
+}

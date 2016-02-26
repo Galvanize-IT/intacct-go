@@ -2,7 +2,7 @@ package intacct
 
 import (
 	"encoding/xml"
-	"time"
+	// "time"
 )
 
 const (
@@ -46,7 +46,8 @@ func NewLogin(user, company, password string) Login {
 
 // TODO Relationship to login?
 type Authentication struct {
-	XMLName          xml.Name `xml:"authentication"`
-	Login            Login
-	SessionTimestamp time.Time `xml:"sessiontimestamp"`
+	XMLName xml.Name `xml:"authentication"`
+	Login   Login
+	// TODO omitempty doesn't work for zero timestamps
+	// SessionTimestamp time.Time `xml:"sessiontimestamp,omitempty"`
 }

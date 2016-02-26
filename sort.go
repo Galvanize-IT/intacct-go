@@ -17,6 +17,22 @@ type SortField struct {
 
 // TODO Sort Asc and Desc could also be methods of fields...
 
-type Sorts struct {
-	Fields []SortField
+type Sorts []SortField
+
+// Omit if zero length
+func (sorts Sorts) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if len(sorts) == 0 {
+		return nil
+	}
+	// Otherwise unmarshal all items
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	if err := e.Encode([]SortField(sorts)); err != nil {
+		return err
+	}
+	if err := e.EncodeToken(start.End()); err != nil {
+		return err
+	}
+	return nil
 }
