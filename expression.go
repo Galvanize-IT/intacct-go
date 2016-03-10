@@ -8,6 +8,10 @@ type Expression struct {
 	Value    string `xml:"expression>value"`
 }
 
+func (ex Expression) IsEmpty() bool {
+	return ex.Field == "" && ex.Operator == "" && ex.Value == ""
+}
+
 func NewExpression(field, operator, value string) Expression {
 	return Expression{
 		Field:    field,

@@ -44,9 +44,11 @@ func TestRequest(t *testing.T) {
 	get := Function{
 		ControlID: "testControlID",
 		Method: GetList{
-			Object:   "invoice",
-			MaxItems: 2,
-			Filter:   InvoiceNo.Equals("INV-01"),
+			Object: "invoice",
+			ListParams: ListParams{
+				MaxItems: 2,
+				Filter:   InvoiceNo.Equals("INV-01"),
+			},
 		},
 	}
 

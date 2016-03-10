@@ -25,10 +25,12 @@ func TestFunction(t *testing.T) {
 	getList := Function{
 		ControlID: "testControlID",
 		Method: GetList{
-			Object:   "invoice",
-			MaxItems: 10,
-			Filter:   CustomerID.Equals("C-01"),
-			Sorts:    Sorts{{Order: Desc, Value: "dateposted"}},
+			Object: "invoice",
+			ListParams: ListParams{
+				MaxItems: 10,
+				Filter:   CustomerID.Equals("C-01"),
+				Sorts:    Sorts{{Order: Desc, Value: "dateposted"}},
+			},
 		},
 	}
 

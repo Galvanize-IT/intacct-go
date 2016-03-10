@@ -22,7 +22,7 @@ type Client struct {
 // TODO Errors?
 // TODO accept method?
 // TODO Pass operations instead?
-func (c Client) NewRequest(m Method, ps ...Params) (*http.Request, error) {
+func (c Client) NewRequest(m Method) (*http.Request, error) {
 	// Create request body
 	body := NewRequestV2(c.config, m)
 

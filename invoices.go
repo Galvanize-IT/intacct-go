@@ -65,9 +65,11 @@ func (inv Invoices) Get(id string) (Invoice, error) {
 	get := Function{
 		ControlID: "testControlID",
 		Method: GetList{
-			Object:   "invoice",
-			MaxItems: 2,
-			Filter:   InvoiceNo.Equals(id),
+			Object: "invoice",
+			ListParams: ListParams{
+				MaxItems: 2,
+				Filter:   InvoiceNo.Equals(id),
+			},
 		},
 	}
 
@@ -115,13 +117,32 @@ func (inv Invoices) Get(id string) (Invoice, error) {
 }
 
 // TODO Accept params - filtering and sorting
-func (inv Invoices) List(params ...Params) ([]Invoice, error) {
+// Allow params:
+// * ListParams
+// * Expression
+// * SortField
+// TODO common list building
+func (inv Invoices) List(params ...interface{}) ([]Invoice, error) {
+	list := GetList{
+		Object:     "invoice",
+		ListParams: ListParams{MaxItems: 10}, // TODO Default page size?
+	}
+
+	for _, param := range params {
+		switch p := param.(type) {
+		case ListParams:
+			list.ListParams = list.ListParams.Merge(p)
+		case Expression:
+			// TODO nested/multiple filters?
+			list.ListParams.Filter = p
+		case SortField:
+			list.ListParams.Sorts = append(list.ListParams.Sorts, p)
+		}
+	}
+
 	get := Function{
 		ControlID: "testControlID",
-		Method: GetList{
-			Object:   "invoice",
-			MaxItems: 10, // TODO Default page size?
-		},
+		Method:    list,
 	}
 
 	// Create a new request using the Client

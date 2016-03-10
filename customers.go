@@ -15,6 +15,6 @@ func (cust Customers) Get(id string) (Customer, error) {
 }
 
 // TODO What about meta information? Attach to a List type?
-func (cust Customers) List(params ...Params) ([]Customer, error) {
+func (cust Customers) List(params ...ListParams) ([]Customer, error) {
 	return nil, nil
 }
