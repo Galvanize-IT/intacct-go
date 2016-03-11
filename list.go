@@ -15,9 +15,9 @@ type GetList struct {
 // Filters and sorts can be attached to the params or passed directly to List
 // TODO How to support multiple or nested filter expressions?
 type ListParams struct {
-	MaxItems uint64     `xml:"maxitems,attr"`
-	Filter   Expression `xml:"filter"`
-	Sorts    Sorts      `xml:"sorts"`
+	MaxItems uint64  `xml:"maxitems,attr"`
+	Filter   Logical `xml:"filter"`
+	Sorts    Sorts   `xml:"sorts"`
 }
 
 // Merge will merge two ListParams - the given values (if non-zero) take
@@ -26,9 +26,9 @@ func (l ListParams) Merge(other ListParams) ListParams {
 	if other.MaxItems > 0 {
 		l.MaxItems = other.MaxItems
 	}
-	if !other.Filter.IsEmpty() {
-		l.Filter = other.Filter
-	}
+
+	l.Filter.Filters = append(l.Filter.Filters, other.Filter.Filters...)
+
 	if len(other.Sorts) > 0 {
 		l.Sorts = other.Sorts
 	}

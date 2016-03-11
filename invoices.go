@@ -46,6 +46,8 @@ type Invoice struct {
 	TotalDue      float64   `xml:"totaldue"`
 	Description   string    `xml:"description"`
 	Currency      string    `xml:"currency"`
+	BillTo        string    `xml:"billto>contactname"`
+	ShipTo        string    `xml:"shipto>contactname"`
 	State         string    `xml:"state"`
 	Items         LineItems `xml:"invoiceitems>lineitem"`
 	// TODO modification date
@@ -65,7 +67,7 @@ func (inv Invoices) Get(id string) (Invoice, error) {
 			Object: "invoice",
 			ListParams: ListParams{
 				MaxItems: 2,
-				Filter:   InvoiceNo.Equals(id),
+				Filter:   AllOf(InvoiceNo.Equals(id)),
 			},
 		},
 	}
@@ -130,8 +132,9 @@ func (inv Invoices) List(params ...interface{}) ([]Invoice, error) {
 		case ListParams:
 			list.ListParams = list.ListParams.Merge(p)
 		case Expression:
-			// TODO nested/multiple filters?
-			list.ListParams.Filter = p
+			list.ListParams.Filter.Filters = append(
+				list.ListParams.Filter.Filters, p,
+			)
 		case SortField:
 			list.ListParams.Sorts = append(list.ListParams.Sorts, p)
 		}

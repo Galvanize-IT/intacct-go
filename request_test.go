@@ -47,7 +47,7 @@ func TestRequest(t *testing.T) {
 			Object: "invoice",
 			ListParams: ListParams{
 				MaxItems: 2,
-				Filter:   InvoiceNo.Equals("INV-01"),
+				Filter:   AllOf(InvoiceNo.Equals("INV-01")),
 			},
 		},
 	}
