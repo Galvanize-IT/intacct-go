@@ -10,6 +10,17 @@ type Date struct {
 	time.Time
 }
 
+const americanDate = "1/2/2006"
+
+// Use american format 1/2/2006
+func (d Date) String() string {
+	return d.Time.Format(americanDate)
+}
+
+func NewDate(year int, month time.Month, day int) Date {
+	return Date{Time: time.Date(year, month, day, 0, 0, 0, 0, time.UTC)}
+}
+
 // TODO Case sensitivity?
 type DateParts struct {
 	Year  int        `xml:"year"`

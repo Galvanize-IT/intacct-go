@@ -7,6 +7,15 @@ import (
 )
 
 func TestDate(t *testing.T) {
+	jan1 := NewDate(2012, 1, 1)
+	if jan1.String() != "1/1/2012" {
+		t.Errorf("Unexpected date string: %s != 1/1/2012", jan1)
+	}
+	dec12 := NewDate(2006, 12, 12)
+	if dec12.String() != "12/12/2006" {
+		t.Errorf("Unexpected date string: %s != 12/12/2006", dec12)
+	}
+
 	now := Date{time.Now()}
 	b, err := xml.MarshalIndent(now, "", "\t")
 	if err != nil {
