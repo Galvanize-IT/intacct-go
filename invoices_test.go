@@ -112,4 +112,10 @@ func TestInvoices(t *testing.T) {
 	if invoice.State != Posted {
 		t.Errorf("unexpected invoice state: %s", invoice.State)
 	}
+
+	if len(invoice.Items) != 2 {
+		t.Errorf(
+			"unexpected number of items: %d != 2", len(invoice.Items),
+		)
+	}
 }

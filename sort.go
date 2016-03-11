@@ -36,3 +36,12 @@ func (sorts Sorts) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 	return nil
 }
+
+// TODO value type?
+func SortAsc(value string) SortField {
+	return SortField{Order: Asc, Value: value}
+}
+
+func SortDesc(value string) SortField {
+	return SortField{Order: Desc, Value: value}
+}

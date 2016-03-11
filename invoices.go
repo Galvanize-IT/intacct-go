@@ -11,46 +11,43 @@ const (
 	Posted = "Posted"
 )
 
-// TODO Are there multiple types of invoiceitems?
-type InvoiceItem struct {
-	LineItems []LineItem `xml:"lineitem"`
-}
+type LineItems []LineItem
 
 type LineItem struct {
-	XMLName         xml.Name `xml:"lineitem"`
-	LineNumber      string   `xml:"line_num"`
-	AccountLabel    string   `xml:"accountlabel"`
-	GLAccountNumber string   `xml:"glaccountno"`
-	Amount          float64  `xml:"amount"`
-	Memo            string   `xml:"memo"`
-	LocationID      string   `xml:"locationid"`   // TODO int?
-	DepartmentID    string   `xml:"departmentid"` // TODO int?
-	Key             string   `xml:"key"`          // TODO int?
-	TotalPaid       float64  `xml:"totalpaid"`
-	TotalDue        float64  `xml:"totaldue"`
+	LineNumber      string  `xml:"line_num"`
+	AccountLabel    string  `xml:"accountlabel"`
+	GLAccountNumber string  `xml:"glaccountno"`
+	Amount          float64 `xml:"amount"`
+	Memo            string  `xml:"memo"`
+	LocationID      string  `xml:"locationid"`   // TODO int?
+	DepartmentID    string  `xml:"departmentid"` // TODO int?
+	Key             string  `xml:"key"`          // TODO int?
+	TotalPaid       float64 `xml:"totalpaid"`
+	TotalDue        float64 `xml:"totaldue"`
 	// TRX?
 	Currency    string `xml:"currency"`
 	CustomerKey string `xml:"customerkey"`
 }
 
 type Invoice struct {
-	XMLName       xml.Name `xml:"invoice"`
-	Key           string   `xml:"key"`
-	CustomerID    string   `xml:"customerid"`
-	DateCreated   Date     `xml:"datecreated"`
-	DatePosted    Date     `xml:"dateposted"`
-	DateDue       Date     `xml:"datedue"`
-	DatePaid      Date     `xml:"datepaid"`
-	TermName      string   `xml:"termname"` // TODO ENUM?
-	BatchKey      string   `xml:"batchkey"` // int?
-	InvoiceNumber string   `xml:"invoiceno"`
-	PONumber      string   `xml:"ponumber"`
-	TotalAmount   float64  `xml:"totalamount"`
-	TotalPaid     float64  `xml:"totalpaid"`
-	TotalDue      float64  `xml:"totaldue"`
-	Description   string   `xml:"description"`
-	Currency      string   `xml:"currency"`
-	State         string   `xml:"state"`
+	XMLName       xml.Name  `xml:"invoice"`
+	Key           string    `xml:"key"`
+	CustomerID    string    `xml:"customerid"`
+	DateCreated   Date      `xml:"datecreated"`
+	DatePosted    Date      `xml:"dateposted"`
+	DateDue       Date      `xml:"datedue"`
+	DatePaid      Date      `xml:"datepaid"`
+	TermName      string    `xml:"termname"` // TODO ENUM?
+	BatchKey      string    `xml:"batchkey"` // int?
+	InvoiceNumber string    `xml:"invoiceno"`
+	PONumber      string    `xml:"ponumber"`
+	TotalAmount   float64   `xml:"totalamount"`
+	TotalPaid     float64   `xml:"totalpaid"`
+	TotalDue      float64   `xml:"totaldue"`
+	Description   string    `xml:"description"`
+	Currency      string    `xml:"currency"`
+	State         string    `xml:"state"`
+	Items         LineItems `xml:"invoiceitems>lineitem"`
 	// TODO modification date
 }
 
