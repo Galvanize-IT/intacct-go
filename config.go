@@ -10,6 +10,12 @@ type Config struct {
 	Location       string // Optional
 }
 
+// IsValid returns true if sender, sender password, user, user password, and
+// company are all set
+func (config Config) IsValid() bool {
+	return config.Sender != "" && config.SenderPassword != "" && config.User != "" && config.UserPassword != "" && config.Company != ""
+}
+
 // TODO Parse a JSON file
 func Parse() (config Config) {
 	return
